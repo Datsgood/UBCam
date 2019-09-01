@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+theme: jekyll-theme-slate
 title: [UBCam]
 description: [Real-time Gaussian background subtraction on a FPGA]
 github:
