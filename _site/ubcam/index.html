@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>UBCam | datsgood.github.io</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="UBCam" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Real-time Gaussian background subtraction implemented on a FPGA" />
+<meta property="og:description" content="Real-time Gaussian background subtraction implemented on a FPGA" />
+<link rel="canonical" href="http://localhost:4000/ubcam/" />
+<meta property="og:url" content="http://localhost:4000/ubcam/" />
+<meta property="og:site_name" content="datsgood.github.io" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/ubcam/","headline":"UBCam","description":"Real-time Gaussian background subtraction implemented on a FPGA","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="/assets/css/style.css?v=b58d72cc9678831cd5bf3dafb250e1bcba7c34f7">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">datsgood.github.io</h1>
+      <h2 class="project-tagline">Real-time Gaussian background subtraction implemented on a FPGA</h2>
+      
+        <a href="https://github.com/Datsgood/datsgood.github.io" class="btn">View on GitHub</a>
+      
+      
+    </section>
+
+    <section class="main-content">
+      <h1 id="ubcam">UBCam</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>UBCam is an automated security system that implements a <strong>computer vision</strong> algorithm for outlier detection on <strong>FPGA</strong>s to detect intruders from a  <strong>real-time video</strong> feed and alert users through an <strong>Android</strong> app. Using a master-slave architecture, we integrated two FPGAs via serial communication to implement our hardware system. The slave FPGA uses video processing cores, both provided by Intel’s University program and built by ourselves, to learn and filter out the background from a live video feed. Using a master DE1 that integrates a touchscreen LCD and networking modules, we allow the users to control the slave DE1, training the device, its sensitivity while filtering, and enabling its intruder alerts. To extend the control functionality, we connected our hardware system to a cloud service and built an Android app to remotely monitor the system, visualize historic data using Google Maps, and obtain recommendations for new system placements from our <strong>cloud service</strong> which uses <strong>machine learning</strong> to predict areas most prone to crime.</p>
+
+<!-- TODO: embed youtube video -->
+<h2 id="background">Background</h2>
+<div class="row">
+  <div class="column">
+    <img src="./assets/img/filter_logic.png" alt="Snow" style="width:50%;float: left" />
+  </div>
+  <div class="column">
+    <img src="./assets/img/gaussian_model.png" alt="Forest" style="width:50%;float: right;" />
+  </div>
+</div>
+<p>Gaussian background subtraction is a computer vision algorithm for highlighting foreground objects/outliers. For a given image of <em>n x m</em> pixels, we assume that every pixel comes from a Gaussian distribution. During training, we sample snapshots of the background to compute the average grayscale value and the variance caused by natural noise to “learn” the background. Once trained, we are able to highlight foreground objects by taking the difference between the input image and our reference background image and filtering out pixels that are explained by the variance learned during training.</p>
+
+<h2 id="hardware-system">Hardware System</h2>
+<p><img src="assets/img/hardware_system.png" alt="" />
+The above depicts a block diagram of our hardware system. Due to SRAM size limitations on the DE1-SoC, the hardware system uses two FPGAs, one master and one slave, to filter the video stream and interact with the external world.</p>
+
+<h3 id="slave-fpga">Slave FPGA</h3>
+<p>The slave FPGA uses a series of video processing cores provided by Intel University Program to compress a 640x480 YCrCb video stream to a 320x240 grayscale video stream. The custom Gaussian filter acclerator removes the background from the processed video stream using the following algorithm:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- let the soft-core CPU learn the background by computing the average and the variance from n frame samples, and storing them in a SRAM cache
+- obtain the user-defined threshold for what is considered the an outlier
+
+- for every pixel in a 320x240 8-bit grayscale video packet,
+	- retrieve its respective mean and standard deviation from the SRAM cache through memory-mapped master interface
+	- if the variance of the input pixel relative to the learned background is greater than the user-defined threshold,
+		- allow the pixel value to go through
+	- otherwise,
+		- floor the pixel color to black
+
+- pass the filtered stream to the next series of processing cores that uncompresses the video to fit a 640x480 VGA output and ultimately displays the video.
+</code></pre></div></div>
+<p>By offloading the work to an accelerator, we achieve real-time video processing. The below shows the digital logic of the Gaussian filter accelerator.</p>
+<div class="column">
+	<img src="./assets/img/gaussian_filter.png" style="width:100%;float=center" /> 
+</div>
+<h3 id="master-fpga">Master FPGA</h3>
+<p>The master FPGA integrates a touchscreen LCD, networking modules, and custom accelerators (i.e.: Bresenham line-drawing accelerator, and a character-writing accelerator) to interface the slave FPGA with the user, the remote server, and the Android app. Using custom drivers, we retrieve user inputs from the touchscreen LCD and the Android device via bluetooth, issue commands to the slave DE1 via RS232 to learn the background and enable the filter, and transfer images to the remote server via WIFI.</p>
+
+<h2 id="android-app">Android App</h2>
+<p>The Android app uses RxAndroid, Room Persistence Library, Retrofit, and Google Maps API to remotely control the hardware system, visualize historic data retrieved from our cloud system, and obtain recommendations for new camera systems to maximize crime coverage.</p>
+
+<ul>
+  <li>
+    <p><strong>visualization</strong>: queries a local, cached database that synchronizes periodically with the remote server to get the coordinates and frequency of intruders detected for a given timeframe. Then, we plot the crime density using a minimalistic Google Maps.</p>
+  </li>
+  <li>
+    <p><strong>recommendation</strong>: we implemented maximum likelihood estimates (MLE) of a Gaussian mixture model to recommend the most problematic areas to be reinforced with additional monitoring systems. As a proof-of-concept, we used the crime dataset from 2003 to 2019 provided publically by the Vancouver Police Department to build our recommender model.</p>
+  </li>
+</ul>
+
+<p><img src="assets/img/visualization.png" alt="" /></p>
+
+<h2 id="source-code">Source Code</h2>
+<p>Due to plagiarism policies set by UBC, we are unable to share our source code at this time.</p>
+
+<h2 id="authors-notes">Author’s Notes</h2>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Datsgood/datsgood.github.io">datsgood.github.io</a> is maintained by <a href="https://github.com/Datsgood">Datsgood</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </section>
+
+    
+  </body>
+</html>
