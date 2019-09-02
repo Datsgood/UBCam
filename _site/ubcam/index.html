@@ -8,23 +8,23 @@
 <meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="Overview" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="[“Real-time Gaussian background subtraction on a FPGA”]" />
-<meta property="og:description" content="[“Real-time Gaussian background subtraction on a FPGA”]" />
+<meta name="description" content="[“Real-time Gaussian background subtraction on a FPGA for CPEN 391”]" />
+<meta property="og:description" content="[“Real-time Gaussian background subtraction on a FPGA for CPEN 391”]" />
 <link rel="canonical" href="http://localhost:4000/ubcam/" />
 <meta property="og:url" content="http://localhost:4000/ubcam/" />
 <meta property="og:site_name" content="[“UBCam”]" />
 <script type="application/ld+json">
-{"@type":"WebPage","headline":"Overview","url":"http://localhost:4000/ubcam/","description":"[“Real-time Gaussian background subtraction on a FPGA”]","@context":"http://schema.org"}</script>
+{"@type":"WebPage","headline":"Overview","url":"http://localhost:4000/ubcam/","description":"[“Real-time Gaussian background subtraction on a FPGA for CPEN 391”]","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
-    <link rel="stylesheet" href="/assets/css/style.css?v=6c2ce40e6b238427709a6daaf9de6411313172d6">
+    <link rel="stylesheet" href="/assets/css/style.css?v=8e58051e4f980ac9bf4622dc019e01faab50bedb">
   </head>
   <body>
     <section class="page-header">
       <h1 class="project-name">UBCam</h1>
-      <h2 class="project-tagline">Real-time Gaussian background subtraction on a FPGA</h2>
+      <h2 class="project-tagline">Real-time Gaussian background subtraction on a FPGA for CPEN 391</h2>
       
       
     </section>
@@ -34,7 +34,8 @@
 
 <p>UBCam is an automated security system that implements a <strong>computer vision</strong> algorithm for outlier detection on <strong>FPGA</strong>s to detect intruders from a  <strong>real-time video</strong> feed and alert users through an <strong>Android</strong> app. Using a master-slave architecture, we integrated two FPGAs via serial communication to implement our hardware system. The slave FPGA uses video processing cores, both provided by Intel’s University program and built by ourselves, to learn and filter out the background from a live video feed. Using a master DE1 that integrates a touchscreen LCD and networking modules, we allow the users to control the slave DE1, training the device, its sensitivity while filtering, and enabling its intruder alerts. To extend the control functionality, we connected our hardware system to a cloud service and built an Android app to remotely monitor the system, visualize historic data using Google Maps, and obtain recommendations for new system placements from our <strong>cloud service</strong> which uses <strong>machine learning</strong> to predict areas most prone to crime.</p>
 
-<!-- TODO: embed youtube video -->
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/1Qcyek5421w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
 <h1 id="background">Background</h1>
 <div class="row">
   <div class="column">

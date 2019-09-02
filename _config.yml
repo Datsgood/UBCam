@@ -1,5 +1,5 @@
 theme: jekyll-theme-cayman
 title: [UBCam]
-description: [Real-time Gaussian background subtraction on a FPGA]
+description: [Real-time Gaussian background subtraction on a FPGA for CPEN 391]
 github:
     is_project_page: false

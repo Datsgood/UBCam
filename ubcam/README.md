@@ -2,7 +2,9 @@
 
 UBCam is an automated security system that implements a **computer vision** algorithm for outlier detection on **FPGA**s to detect intruders from a  **real-time video** feed and alert users through an **Android** app. Using a master-slave architecture, we integrated two FPGAs via serial communication to implement our hardware system. The slave FPGA uses video processing cores, both provided by Intel's University program and built by ourselves, to learn and filter out the background from a live video feed. Using a master DE1 that integrates a touchscreen LCD and networking modules, we allow the users to control the slave DE1, training the device, its sensitivity while filtering, and enabling its intruder alerts. To extend the control functionality, we connected our hardware system to a cloud service and built an Android app to remotely monitor the system, visualize historic data using Google Maps, and obtain recommendations for new system placements from our **cloud service** which uses **machine learning** to predict areas most prone to crime.
 
-<!-- TODO: embed youtube video -->
+{% include youtubePlayer.html %}
+
+
 # Background
 <div class="row">
   <div class="column">
